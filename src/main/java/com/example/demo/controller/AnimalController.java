@@ -19,7 +19,7 @@ public class AnimalController {
     private Animal getAnimal() {
         Animal animal = new Animal();
         animal.setId(counter.incrementAndGet());
-        animal.setName("animal-2");
+        animal.setName("animal-3");
 
         return animal;
     }
