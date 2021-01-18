@@ -53,8 +53,10 @@ jobs:
       - name: Build
         run: mvn clean install
       
-      - name: Create jar
-        run: zip --junk-paths jar_file ./target/*.jar
+      - name: Get jar
+        id: get_jar
+        run: |
+          echo "::set-output name=jarFile::$(ls -R | grep -i "**.jar$")"
 
       - name: Create Release
         id: create_release
@@ -73,6 +75,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./jar_file.zip
-          asset_name: jar_file.zip
-          asset_content_type: application/zip
+          asset_path: ./target/${{needs.get_jar.outputs.jarFile}}
+          asset_name: ${{needs.get_jar.outputs.jarFile}}
+          asset_content_type: application/java-archive
+
