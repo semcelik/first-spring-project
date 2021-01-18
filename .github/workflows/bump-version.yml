@@ -34,7 +34,8 @@ jobs:
           git add ./pom.xml
           git commit -m "[ci] bump version ${{ steps.tag_version.outputs.new_tag }}"
           git tag ${{ steps.tag_version.outputs.new_tag }}
-          git push --follow-tags
+          git push
+          git push origin ${{ steps.tag_version.outputs.new_tag }}
 
   create-release:
     name: Create Release
