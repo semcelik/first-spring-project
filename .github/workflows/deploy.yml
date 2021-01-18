@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Get tag from previous job
-        run: echo "Generating release with the ${{needs.bump-version.outputs.newTag}} tag"
+        run: echo "Generating release with the ${{needs.tag-version.outputs.newTag}} tag"
 
       - name: Checkout code
         uses: actions/checkout@v2
@@ -55,8 +55,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{needs.bump-version.outputs.newTag}}
-          release_name: Release ${{needs.bump-version.outputs.newTag}}
+          tag_name: ${{needs.tag-version.outputs.newTag}}
+          release_name: Release ${{needs.tag-version.outputs.newTag}}
           draft: false
           prerelease: false
   build:
