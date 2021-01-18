@@ -33,7 +33,8 @@ jobs:
           git config --local user.name "Semih Çelik"
           git add ./pom.xml
           git commit -m "[ci] bump version ${{ steps.tag_version.outputs.new_tag }}"
-          git push --atomic origin master ${{ steps.tag_version.outputs.new_tag }}
+          git tag ${{ steps.tag_version.outputs.new_tag }}
+          git push --follow-tags
 
   create-release:
     name: Create Release
