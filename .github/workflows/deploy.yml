@@ -21,7 +21,7 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Set pom
-        run: mvn versions:set -DnewVersion=${{ steps.tag_version.outputs.new_tag }}
+        run: mvn versions:set -DnewVersion=${{ steps.tag_version.outputs.new_tag }:1}
       
       - name: Commit files
         run: |
