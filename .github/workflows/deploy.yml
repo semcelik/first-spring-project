@@ -8,8 +8,11 @@ on:
     branches: [ master ]
 
 jobs:
-  tag:
+  tag-version:
      runs-on: ubuntu-latest
+     outputs:
+      newTag: ${{ steps.tag_version.outputs.new_tag }}
+
      steps:
       - uses: actions/checkout@v2
         with:
@@ -32,9 +35,32 @@ jobs:
           git add ./pom.xml
           git commit -m "[ci] bump version"
           git push
-          
+
+  create-release:
+    name: Create Release
+    needs: tag-version
+    if: startsWith(needs.tag-version.outputs.newTag, 'v')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get tag from previous job
+        run: echo "Generating release with the ${{needs.bump-version.outputs.newTag}} tag"
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{needs.bump-version.outputs.newTag}}
+          release_name: Release ${{needs.bump-version.outputs.newTag}}
+          draft: false
+          prerelease: false
   build:
-    needs: tag
+    needs: create-release
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
