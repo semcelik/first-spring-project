@@ -1,4 +1,4 @@
-name: Publish to Heroku
+name: Publish ${{ github.event.inputs.tag_to_publish }} to Heroku
 
 on: 
   workflow_dispatch:
@@ -31,6 +31,6 @@ jobs:
     - name: Add heroku remote
       run: git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
 
-    - name: Release
+    - name: Release ${{ github.event.inputs.tag_to_publish }}
       run: git push heroku tags/${{ github.event.inputs.tag_to_publish }}~0:master -f
 
