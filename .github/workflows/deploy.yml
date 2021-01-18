@@ -44,6 +44,10 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+        
+    - name: Get version
+      run: echo "Preparing new build for version $(git describe --tags `git rev-list --tags --max-count=1`)"
+
     - name: Build with Maven
       run: mvn package
       
