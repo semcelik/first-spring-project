@@ -33,7 +33,7 @@ jobs:
           git config --local user.email "s.celikce@gmail.com"
           git config --local user.name "Semih Çelik"
           git add ./pom.xml
-          git commit -m "[ci] bump version"
+          git commit -m "[ci] bump version ${{ steps.tag_version.outputs.new_tag }}"
           git push
 
   create-release:
