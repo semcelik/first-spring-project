@@ -1,4 +1,4 @@
-name: Publish to Heroku
+name: Publish
 
 on: 
   workflow_dispatch:
@@ -24,13 +24,14 @@ jobs:
         
     - run: echo "Preparing new build for version ${{ github.event.inputs.tag_to_publish }}"
       
-# heroku already does this
-#    - name: Build with Maven
-#      run: mvn package
+    - name: Build with Maven
+      run: mvn package
       
-    - name: Add heroku remote
-      run: git remote add heroku https://heroku:${{ secrets.HEROKU_API_KEY }}@git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
-
-    - name: Release ${{ github.event.inputs.tag_to_publish }}
-      run: git push heroku tags/${{ github.event.inputs.tag_to_publish }}~0:master -f
+    - uses: hmanzur/actions-aws-eb@v1.0.0
+      with:
+        command: 'deploy ${{ secrets.AWS_ENVIRONMENT_NAME }}'
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_DEFAULT_REGION: "us-east-2"
 
