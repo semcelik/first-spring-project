@@ -27,7 +27,7 @@ jobs:
       - run: echo "Preparing new build for version ${{ env.TAG_NAME }}"
 
       - name: Build with Maven
-        run: mvn package
+        run: mvn clean package -Drevision=${NEW_TAG:1}
 
       - name: Set APPLICATION_VERSION and JAR_FILE
         id: variables
