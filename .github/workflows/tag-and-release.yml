@@ -1,4 +1,4 @@
-name: Bump version and create release
+name: Tag version and create release
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
 
 jobs:
   tag-version:
-     runs-on: ubuntu-latest
-     outputs:
+    runs-on: ubuntu-latest
+    outputs:
       newTag: ${{ steps.tag_version.outputs.new_tag }}
 
-     steps:
+    steps:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
@@ -21,20 +21,10 @@ jobs:
         with:
           dry_run: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Upload pom with new version
-        env:
-          NEW_TAG: ${{ steps.tag_version.outputs.new_tag }}
-        run: mvn versions:set -DnewVersion=${NEW_TAG:1}
-      
-      - name: Commit files
+
+      - name: Create and push ${{ steps.tag_version.outputs.new_tag }} tag
         run: |
-          git config --local user.email "s.celikce@gmail.com"
-          git config --local user.name "Semih Çelik"
-          git add ./pom.xml
-          git commit -m "[ci] bump version ${{ steps.tag_version.outputs.new_tag }}"
           git tag ${{ steps.tag_version.outputs.new_tag }}
-          git push
           git push origin ${{ steps.tag_version.outputs.new_tag }}
 
   create-release:
@@ -57,12 +47,14 @@ jobs:
           java-version: 11
 
       - name: Build
-        run: mvn clean install
-      
-      - name: Get jar
-        id: get_jar
+        env:
+          NEW_TAG: ${{needs.tag-version.outputs.newTag}}
+        run: mvn clean package -Drevision=${NEW_TAG:1}
+
+      - name: Set JAR_FILE
+        id: variables
         run: |
-          echo "::set-output name=jarFile::$(ls -R | grep -i "**.jar$")"
+          echo "::set-output name=JAR_FILE::$(ls -R | grep -i "**.jar$")"
 
       - name: Create Release
         id: create_release
@@ -74,14 +66,14 @@ jobs:
           release_name: Release ${{needs.tag-version.outputs.newTag}}
           draft: false
           prerelease: false
-          
-      - name: Upload ${{steps.get_jar.outputs.jarFile}} to Release ${{needs.tag-version.outputs.newTag}}
+
+      - name: Upload ${{steps.variables.outputs.JAR_FILE}} to Release ${{needs.tag-version.outputs.newTag}}
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./target/${{steps.get_jar.outputs.jarFile}}
-          asset_name: ${{steps.get_jar.outputs.jarFile}}
+          asset_path: ./target/${{steps.variables.outputs.JAR_FILE}}
+          asset_name: ${{steps.variables.outputs.JAR_FILE}}
           asset_content_type: application/java-archive
 

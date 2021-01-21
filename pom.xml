@@ -10,11 +10,12 @@
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>demo</artifactId>
-	<version>0.0.57</version>
+	<version>${revision}</version>
 	<name>demo</name>
 	<description>Demo project for Spring Boot</description>
 
 	<properties>
+		<revision>0.0.1</revision>
 		<java.version>11</java.version>
 	</properties>
 
