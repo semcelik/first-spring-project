@@ -15,7 +15,7 @@ public class AnimalController {
     @GetMapping("/")
     public String root(Model model) {
         model.addAttribute("name", "amazon");
-        return "hello-world";
+        return "hello-world v0.0.53";
     }
 
     @GetMapping("animals")
