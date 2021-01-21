@@ -27,13 +27,16 @@ jobs:
     - name: Build with Maven
       run: mvn package
       
-    - name: Create ebs deploy.yml
-      run:  mkdir .elasticbeanstalk && echo "deploy:""\n\tartifact:"" ./target/$(ls -R | grep -i "**.jar$")" >> .elasticbeanstalk/config.yml
+    - name: Create jar
+      run: zip --junk-paths jar_file ./target/*.jar
       
-    - uses: hmanzur/actions-aws-eb@v1.0.0
+    - name: Deploy to EB
+      uses: einaregilsson/beanstalk-deploy@v14
       with:
-        command: 'deploy ${{ secrets.AWS_ENVIRONMENT_NAME }}'
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: "us-east-2"
+        aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        application_name: "spring-demo"
+        environment_name: ${{ secrets.AWS_ENVIRONMENT_NAME }}
+        version_label: ${{ github.event.inputs.tag_to_publish }}
+        region: us-east-2
+        deployment_package: ./jar_file.zip
