@@ -13,9 +13,8 @@ public class AnimalController {
     private final AtomicInteger counter = new AtomicInteger();
 
     @GetMapping("/")
-    public String root(Model model) {
-        model.addAttribute("name", "amazon v0.0.69");
-        return "hello-world";
+    public String root() {
+        return "hello-amazon v0.0.70";
     }
 
     @GetMapping("animals")
