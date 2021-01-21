@@ -15,7 +15,7 @@ public class AnimalController {
     @GetMapping("/")
     public String root(Model model) {
         model.addAttribute("name", "amazon");
-        return "hello-world v0.0.61";
+        return "hello-world v0.0.62";
     }
 
     @GetMapping("animals")
@@ -26,7 +26,7 @@ public class AnimalController {
     private Animal getAnimal() {
         Animal animal = new Animal();
         animal.setId(counter.incrementAndGet());
-        animal.setName("animal-0.0.61");
+        animal.setName("animal-0.0.62");
 
         return animal;
     }
