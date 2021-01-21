@@ -43,7 +43,7 @@ jobs:
         --application-name spring-demo \
         --source-bundle S3Bucket="${{ secrets.AWS_S3_BUCKET_NAME }}",S3Key="$(ls -R | grep -i "**.jar$")" \
         --version-label "ver-${{ github.sha }}" \
-        --description "commit-sha-${{ github.sha }}"
+        --description "commit-sha-${{ github.sha }}" 2> /dev/null
          
          
     - name: Deploy new ElasticBeanstalk Application Version
