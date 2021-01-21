@@ -14,7 +14,7 @@ public class AnimalController {
 
     @GetMapping("/")
     public String root() {
-        return "hello-amazon v0.0.70";
+        return "hello-amazon v0.0.71";
     }
 
     @GetMapping("animals")
