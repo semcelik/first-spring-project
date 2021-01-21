@@ -26,23 +26,25 @@ jobs:
       
     - name: Build with Maven
       run: mvn package
-
-    - name: Create ebs deploy.yml
-      run:  mkdir .elasticbeanstalk && echo "deploy:""\n\tartifact:"" ./target/$(ls -R | grep -i "**.jar$")" >> .elasticbeanstalk/config.yml
-  
-    - name: AWS - init environment
-      uses: hmanzur/actions-aws-eb@v1.0.0
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
       with:
-        command: 'init SpringDemo-env --region us-east-2 --platform Java'
-
-    - name: Deploy to EB
-      uses: hmanzur/actions-aws-eb@v1.0.0
-      with:
-        command: 'deploy SpringDemo-env'
-      env:
-        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: "us-east-2"
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: "us-east-2"
+        
+    - name: Upload package to S3 bucket
+      run: aws s3 cp ./target/$(ls -R | grep -i "**.jar$") s3://${{ secrets.AWS_S3_BUCKET_NAME }}/
+    
+    - name: Create new ElasticBeanstalk Application Version
+      run: |
+        aws elasticbeanstalk create-application-version \
+        --application-name spring-demo \
+        --source-bundle S3Bucket="${{ secrets.AWS_S3_BUCKET_NAME }}",S3Key="./target/$(ls -R | grep -i "**.jar$")" \
+        --version-label "ver-${{ github.sha }}" \
+        --description "commit-sha-${{ github.sha }}"
+         
+         
+    - name: Deploy new ElasticBeanstalk Application Version
+      run: aws elasticbeanstalk update-environment --environment-name SpringDemo-env --version-label "ver-${{ github.sha }}"    
