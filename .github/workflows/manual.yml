@@ -14,9 +14,11 @@ jobs:
 
     steps:
       - uses: dsaltares/fetch-gh-release-asset@master
+        env:
+          TAG_NAME: ${{ github.event.inputs.tag_to_publish }}
         with:
           repo: "semcelik/first-spring-project"
-          version: ${{ github.event.inputs.tag_to_publish }}
-          file: "*.jar"
+          version: ${{ env.TAG_NAME }}
+          file: "demo-${TAG_NAME:1}.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
       - run: ls
