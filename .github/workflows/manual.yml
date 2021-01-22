@@ -19,3 +19,4 @@ jobs:
           version: ${{ github.event.inputs.tag_to_publish }}
           file: "*.jar"
           token: ${{ secrets.GITHUB_TOKEN }}
+      - run: ls
