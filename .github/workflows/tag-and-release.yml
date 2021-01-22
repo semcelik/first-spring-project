@@ -50,7 +50,7 @@ jobs:
       - name: Build
         env:
           NEW_TAG: ${{needs.tag-version.outputs.newTag}}
-        run: mvn clean package -Drevision=${NEW_TAG:1}
+        run: mvn clean package -Drevision=${NEW_TAG:1} -DskipTests
 
       - name: Set JAR_FILE
         id: variables
