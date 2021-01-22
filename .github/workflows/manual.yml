@@ -28,5 +28,4 @@ jobs:
     # Runs a single command using the runners shell
     - name: Send greeting
       run: |
-        echo "Hello ${{ github.event.repo.url }}"
-        echo "###: ${{ github.event.payload }}"
+        echo "Hello ${{ toJSON(github.event) }}"
