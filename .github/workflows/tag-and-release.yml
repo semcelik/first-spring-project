@@ -56,12 +56,15 @@ jobs:
       - name: Build
         env:
           NEW_TAG: ${{needs.tag-version.outputs.newTag}}
-        run: mvn clean package -Drevision=${NEW_TAG:1} -DskipTests
+        run: |
+          ls ~/.m2/repository
+          mvn clean package -Drevision=${NEW_TAG:1} -DskipTests
 
       - name: Set JAR_FILE
         id: variables
         run: |
           echo "::set-output name=JAR_FILE::$(ls -R | grep -i "**.jar$")"
+          ls ~/.m2/repository
 
       - name: Create Release
         id: create_release
