@@ -19,6 +19,6 @@ jobs:
         with:
           repo: "semcelik/first-spring-project"
           version: ${{ env.TAG_NAME }}
-          file: "demo-${TAG_NAME:1}.jar"
+          file: demo-${TAG_NAME:1}.jar
           token: ${{ secrets.GITHUB_TOKEN }}
       - run: ls
