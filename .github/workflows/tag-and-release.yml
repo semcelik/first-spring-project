@@ -13,8 +13,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
 
       - name: Bump version and push tag
         id: tag_version
@@ -40,7 +38,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: ${{needs.tag-version.outputs.newTag}}
-          fetch-depth: 0
 
       - name: Set up JDK 11
         uses: actions/setup-java@v1
@@ -52,19 +49,17 @@ jobs:
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-maven
 
       - name: Build
         env:
           NEW_TAG: ${{needs.tag-version.outputs.newTag}}
-        run: |
-          ls ~/.m2/repository
-          mvn clean package -Drevision=${NEW_TAG:1} -DskipTests
+        run: mvn clean package -Drevision=${NEW_TAG:1} -DskipTests
 
       - name: Set JAR_FILE
         id: variables
         run: |
           echo "::set-output name=JAR_FILE::$(ls -R | grep -i "**.jar$")"
-          ls ~/.m2/repository
 
       - name: Create Release
         id: create_release
