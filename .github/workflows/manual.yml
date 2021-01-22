@@ -3,9 +3,9 @@ name: Manual workflow
 on:
   workflow_dispatch:
     inputs:
-      name:
-        description: 'Person to greet'
-        default: 'World'
+      tag_to_publish:
+        description: 'Tag version'
+        default: 'v0.0.80'
         required: false
 
 jobs:
@@ -13,7 +13,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Send greeting
-      run: |
-        wget --help
-        echo "Hello ${{ toJSON(github.event) }}"
+      - uses: dsaltares/fetch-gh-release-asset@master
+        with:
+          repo: "semcelik/first-spring-project"
+          version: ${{ github.event.inputs.tag_to_publish }}
+          file: "*.jar"
+          token: ${{ secrets.GITHUB_TOKEN }}
