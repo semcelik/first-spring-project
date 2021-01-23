@@ -54,7 +54,7 @@ jobs:
       - name: Build
         env:
           NEW_TAG: ${{needs.tag-version.outputs.newTag}}
-        run: mvn clean package -Drevision=${NEW_TAG:1} -DskipTests
+        run: mvn clean package -Drevision=${NEW_TAG:1} -DskipTests -Dspring.profiles.active=aws
 
       - name: Set JAR_FILE
         id: variables

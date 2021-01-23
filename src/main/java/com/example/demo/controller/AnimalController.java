@@ -1,16 +1,20 @@
 package com.example.demo.controller;
 
-import com.example.demo.Animal;
-import org.springframework.ui.Model;
+import com.example.demo.entity.Animal;
+import com.example.demo.repository.AnimalRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 public class AnimalController {
 
-    private final AtomicInteger counter = new AtomicInteger();
+    @Autowired
+    private AnimalRepository animalRepository;
 
     @GetMapping("/")
     public String root() {
@@ -18,15 +22,17 @@ public class AnimalController {
     }
 
     @GetMapping("animals")
-    public Animal getAll() {
-        return getAnimal();
+    public List<Animal> getAll() {
+        List<Animal> animals = (List<Animal>) animalRepository.findAll();
+        Collections.reverse(animals);
+        return animals;
     }
 
-    private Animal getAnimal() {
+    @GetMapping("animals/{name}")
+    public Animal save(@PathVariable String name) {
         Animal animal = new Animal();
-        animal.setId(counter.incrementAndGet());
-        animal.setName("animal-0.0.80");
-
-        return animal;
+        animal.setName(name);
+        Animal savedAnimal = animalRepository.save(animal);
+        return savedAnimal;
     }
 }
