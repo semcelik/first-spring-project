@@ -14,6 +14,8 @@ public class Animal {
 
     private String name;
 
+    private Integer status;
+
     public UUID getId() {
         return id;
     }
@@ -28,5 +30,13 @@ public class Animal {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

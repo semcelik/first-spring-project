@@ -32,6 +32,7 @@ public class AnimalController {
     public Animal save(@PathVariable String name) {
         Animal animal = new Animal();
         animal.setName(name);
+        animal.setStatus(1);
         Animal savedAnimal = animalRepository.save(animal);
         return savedAnimal;
     }
